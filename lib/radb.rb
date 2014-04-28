@@ -18,10 +18,22 @@ module Radb
         \x5> $ radb pull com.cloudjay.com -db cjay.db -i CJay
         \x5>
         LONGDESC
-        option :database, :type => :string, :desc => 'Database filename', :required => true, :aliases => "-db"
+        option :database, :type => :string, :desc => 'Database filename', :required => true, :aliases => "-d"
         option :image_dir, :type => :string, :desc => 'Images directory', :required => true, :aliases => "-i"
+        option :serial, :type => :string, :desc => 'Device serial', :required => false, :aliases => '-s'
         def pull(package)
-            say "Pulling from " + package
+
+            target = get_target(options[:serial])
+            database_path = "/data/data/#{package}/databases/" + options[:database]
+            images_path = "/sdcard/DCIM/" + options[:image_dir]
+
+            say " > Pull database from " + database_path
+            run "adb #{which_one(target)} shell \"run-as #{package} chmod 666 #{database_path}\"", :verbose => false
+            run "adb #{which_one(target)} pull #{database_path}", :verbose => false
+            run "adb #{which_one(target)} shell \"run-as #{package} chmod 600 #{database_path}\"", :verbose => false
+
+            say " > Pull images from " + images_path
+            run "adb #{which_one(target)} pull #{images_path}", :verbose => false
         end
 
         #
@@ -61,19 +73,7 @@ module Radb
         desc 'otadebug -s <serial>', 'Debug android device over the air'
         option :serial, :type => :string, :desc => 'Device serial', :required => false, :aliases => '-s'
         def otadebug
-
-            if options[:serial]
-                device = options[:serial]
-            else
-                device = choose_device
-            end
-
-            if device.nil?
-                raise "Device not found"
-            end
-
-            target = { :serial => device }
-
+            target = get_target(options[:serial])
             ip = get_ipv4(target)
             say "Target ip: " + ip
             run "adb #{which_one(target)} tcpip 5555", :verbose => false
@@ -83,6 +83,7 @@ module Radb
         #
         desc 'logcat', 'Run logcat-color for specific device'
         def logcat
+
         end
     end
 end

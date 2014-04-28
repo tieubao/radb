@@ -31,6 +31,22 @@ module Radb
         devices
     end
 
+    def get_target(serial)
+
+        if serial
+            device = serial
+        else
+            device = choose_device
+        end
+
+        if device.nil?
+            raise "Device not found"
+        end
+
+        target = { :serial => device }
+        return target
+    end
+
     def which_one(target)
         direct = ''
         direct = '-d' if target[:device]
