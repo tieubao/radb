@@ -81,7 +81,7 @@ module Radb
         \x5> $ radb otadebug -s 81f42e1
         \x5>
         LONGDESC
-        desc 'otadebug -s <serial>', 'Debug android device over the air'
+        desc 'otadebug', 'Debug android device over the air'
         option :serial, :type => :string, :desc => 'Device serial', :required => false, :aliases => '-s'
         def otadebug
             target = get_target(options[:serial])
@@ -98,7 +98,7 @@ module Radb
         \x5> $ radb logcat -s 81f42e1
         \x5>
         LONGDESC
-        desc 'logcat', 'Display logcat for specific device'
+        desc 'logcat <package_name>', 'Display logcat for specific device'
         option :serial, :type => :string, :desc => 'Device serial', :required => false, :aliases => '-s'
         def logcat(package)
             target = get_target(options[:serial])

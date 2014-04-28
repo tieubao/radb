@@ -1,24 +1,50 @@
 # Radb
 
-TODO: Write a gem description
+Radb is a gem that provide cli for some adb tasks in android device. It required `adb` for adb command set and `logcat-color` for better logcat output.
 
 ## Installation
 
-Add this line to your application's Gemfile:
+### On Mac OSX
 
-    gem 'radb'
+Install xcode command-line tool:
 
-And then execute:
+    `$ xcode-select --install`
 
-    $ bundle
+Install `adb`:
 
-Or install it yourself as:
+    `$ bash <(curl https://raw.github.com/corbindavenport/nexus-tools/master/install.sh)`
 
-    $ gem install radb
+Install `python, pip, ruby` through `homebrew`
+
+Install `logcat-color` through `pip`
+
+Install it yourself as:
+
+    `$ gem install radb`
 
 ## Usage
 
-TODO: Write usage instructions here
+    At this version, `radb` provides 4 commands:
+
+    `$ radb pull <package>`: pull database and images data from app to PC
+    Example:
+        $ radb pull com.cloudjay.cjay -d cjay.db -i CJay
+        $ radb pull com.cloudjay.cjay -d cjay.db -i CJay -s <device serial>
+
+    `$ radb push <package>`: push database and images from PC to app
+    Example:
+        $ radb push com.cloudjay.cjay -d cjay.db -i CJay
+        $ radb push com.cloudjay.cjay -d cjay.db -i CJay -s <device serial>
+
+    `$ radb logcat <package>`: display logcat for specific app
+    Example:
+        $ radb logcat com.cloudjay.cjay
+        $ radb logcat com.cloudjay.cjay -s <device serial>
+
+    `$ radb otadebug`: enable ota debugging for android device.
+    Example:
+        $ radb otadebug
+        $ radb otadebug -s <device serial>
 
 ## Contributing
 
