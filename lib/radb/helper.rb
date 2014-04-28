@@ -105,6 +105,11 @@ module Radb
         end
     end
 
+    def command?(name)
+        `which #{name}`
+        $?.success?
+    end
+
     #
     def execute_adb_with(timeout, arguments)
         args = arguments.split

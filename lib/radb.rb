@@ -78,7 +78,7 @@ module Radb
         `otadebug -s <serial>` will enable ota debug.
 
         Example:
-        \x5> $ otadebug -s 81f42e1
+        \x5> $ radb otadebug -s 81f42e1
         \x5>
         LONGDESC
         desc 'otadebug -s <serial>', 'Debug android device over the air'
@@ -91,10 +91,25 @@ module Radb
             run "adb #{which_one(target)} connect #{ip}", :verbose => false
         end
 
-        #
-        desc 'logcat', 'Run logcat-color for specific device'
-        def logcat
+        long_desc <<-LONGDESC
+        `logcat -s <serial>` will display logcat for specific device.
 
+        Example:
+        \x5> $ radb logcat -s 81f42e1
+        \x5>
+        LONGDESC
+        desc 'logcat', 'Display logcat for specific device'
+        option :serial, :type => :string, :desc => 'Device serial', :required => false, :aliases => '-s'
+        def logcat(package)
+            target = get_target(options[:serial])
+            if command?("logcat-color")
+                puts "logcat-color is already exist"
+                run "logcat-color #{which_one(target)} \"*:I\" | grep `adb shell ps | grep #{package} | cut -c10-15`", :verbose => false
+            else
+                puts "You should install `logcat-color` for better output"
+                run "adb #{which_one(target)} logcat \"*:I\" | grep `adb shell ps | grep com.cloudjay.cjay | cut -c10-15`", :verbose => false
+            end
+        rescue
         end
     end
 end
