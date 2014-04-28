@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
     spec.authors       = ["tieubao"]
     spec.email         = ["nntruonghan@gmail.com"]
     spec.summary       = %q{A cli utilities which wrap Android Debug Bridge}
-    spec.description   = %q{radb provides some tool that help non-geeks take advantage on android devices}
+    spec.description   = %q{radb provides some commands that helps non-geeks take advantage on android devices}
     spec.homepage      = "https://github.com/tieubao/radb"
     spec.license       = "MIT"
 
@@ -24,5 +24,5 @@ Gem::Specification.new do |spec|
     spec.add_dependency 'highline', ">= 0"
     spec.add_dependency 'configliere', ">= 0"
     spec.add_dependency 'childprocess', '>= 0.3.5'
-    
+
 end
