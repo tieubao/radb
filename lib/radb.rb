@@ -1,12 +1,12 @@
 require "radb/version"
+require "radb/helper"
 require "thor"
-require "ADB"
+include Radb
 
 module Radb
-
     class Application < Thor
+
         include Thor::Actions
-        include ADB
         class_option :verbose, :type => :boolean
 
         #
@@ -39,13 +39,45 @@ module Radb
             say "Pushing to " + package
         end
 
+        # Connect devices to PC
+        # Run command:
+        # `radb debug`
+        # 1. Show list devices
+        # 2. Choose device if there are many devices
+        # 3. Get chosen ip address
+        # 4. Enable ota debug
         #
-        desc 'debug <ip>', 'Debug android device over the air'
-        def debug(ip)
-            # 1. Connect Android to Computer
-            # run('adb wait-for-device')
-            say "Ip: " + ip
+        # Run command:
+        # `radb debug -s <serial>`
+        # 1. Get choose ip address
+        # 2. Enable ota debug
+        long_desc <<-LONGDESC
+        `otadebug -s <serial>` will enable ota debug.
 
+        Example:
+        \x5> $ otadebug -s 81f42e1
+        \x5>
+        LONGDESC
+        desc 'otadebug -s <serial>', 'Debug android device over the air'
+        option :serial, :type => :string, :desc => 'Device serial', :required => false, :aliases => '-s'
+        def otadebug
+
+            if options[:serial]
+                device = options[:serial]
+            else
+                device = choose_device
+            end
+
+            if device.nil?
+                raise "Device not found"
+            end
+
+            target = { :serial => device }
+
+            ip = get_ipv4(target)
+            say "Target ip: " + ip
+            run "adb #{which_one(target)} tcpip 5555", :verbose => false
+            run "adb #{which_one(target)} connect #{ip}", :verbose => false
         end
 
         #

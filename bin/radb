@@ -1,4 +1,17 @@
 #!/usr/bin/env ruby
 
 require 'radb'
+require 'fileutils'
+
+# CONFIG_FILE = File.expand_path("~/.badb_config.yaml")
+#
+# def read_settings
+#     Settings.use :config_file
+#     Settings({:device_history => [],:aliases => {}})
+#     FileUtils.touch(CONFIG_FILE)
+#     Settings.read(CONFIG_FILE)
+# end
+#
+# read_settings
+
 Radb::Application.start(ARGV)
