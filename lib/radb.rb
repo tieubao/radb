@@ -102,13 +102,22 @@ module Radb
         option :serial, :type => :string, :desc => 'Device serial', :required => false, :aliases => '-s'
         def logcat(package)
             target = get_target(options[:serial])
+            process_id = %x(adb #{which_one(target)} shell ps | grep #{package} | cut -c10-15)
+
             if command?("logcat-color")
-                puts "logcat-color is already exist"
-                run "logcat-color #{which_one(target)} \"*:I\" | grep `adb shell ps | grep #{package} | cut -c10-15`", :verbose => false
+                s = "logcat-color #{which_one(target)} \"*:I\""
             else
                 puts "You should install `logcat-color` for better output"
-                run "adb #{which_one(target)} logcat \"*:I\" | grep `adb shell ps | grep com.cloudjay.cjay | cut -c10-15`", :verbose => false
+                s = "adb #{which_one(target)} \"*:I\""
             end
+
+            if process_id.empty?
+                say "Cannot found #{package}. It will print all logs."
+            else
+                s = s + " | grep #{process_id}"
+            end
+
+            run s, :verbose => false
         rescue
         end
     end
